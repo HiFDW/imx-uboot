@@ -1,0 +1,12 @@
+---- main_loop Matches (11 in 7 files) ----
+Autoboot.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):	debug("### main_loop entered: bootdelay=%d\n\n", bootdelay);
+Autoboot.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):	debug("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
+Board.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\arch\openrisc\lib):	/* main_loop */
+Board.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\arch\openrisc\lib):		main_loop();
+Board.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\arch\sh\lib):		main_loop();
+Board_r.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):	/* main_loop() can return to retry autoboot, if so just run it again */
+Board_r.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):		main_loop();
+Bootretry.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):static int      retry_time = -1; /* -1 so can call readline before main_loop */
+Common.h (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\include):void	main_loop	(void);
+Main.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):void main_loop(void)
+Main.c (\\192.168.30.157\alex\workspace\myd-y2-htong\myir-imx-uboot\common):	bootstage_mark_name(BOOTSTAGE_ID_MAIN_LOOP, "main_loop");
