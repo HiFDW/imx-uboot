@@ -684,7 +684,7 @@ static iomux_v3_cfg_t const fec2_pads[] = {
 	MX6_PAD_ENET2_RX_ER__ENET2_RX_ER | MUX_PAD_CTRL(ENET_PAD_CTRL),
 
 	/* PHY Reset */
-	MX6_PAD_SNVS_TAMPER6__GPIO5_IO06 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SNVS_TAMPER6__GPIO4_IO16 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static void setup_iomux_fec(int fec_id)
@@ -699,9 +699,9 @@ static void setup_iomux_fec(int fec_id)
 	}else{
 		imx_iomux_v3_setup_multiple_pads(fec2_pads,
 						 ARRAY_SIZE(fec2_pads));
-		gpio_direction_output(IMX_GPIO_NR(5, 6) , 0);
+		gpio_direction_output(IMX_GPIO_NR(4, 16) , 0);
 		mdelay(10);
-		gpio_set_value(IMX_GPIO_NR(5, 6) , 1);
+		gpio_set_value(IMX_GPIO_NR(4, 16) , 1);
 		mdelay(1);
 	};
 }
@@ -836,19 +836,26 @@ size_t display_count = ARRAY_SIZE(displays);
 #endif
 
 static iomux_v3_cfg_t const wifi_pwr_pads[] = {
-	MX6_PAD_JTAG_MOD__GPIO1_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_NAND_DQS__GPIO4_IO16 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SNVS_TAMPER0__GPIO5_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SNVS_TAMPER7__GPIO5_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static iomux_v3_cfg_t const lte_pwr_pads[] = {
-	MX6_PAD_SNVS_TAMPER5__GPIO5_IO05 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_NAND_CE1_B__GPIO4_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_UART2_CTS_B__GPIO1_IO22 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_UART2_RTS_B__GPIO1_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_NAND_CE1_B__GPIO4_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),	
 };
 
 static iomux_v3_cfg_t const lcd_pwr_pads[] = {
 	MX6_PAD_LCD_RESET__GPIO3_IO04 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+
+
+static iomux_v3_cfg_t const hwwatchdog_pads[] = {
+	MX6_PAD_LCD_DATA16__GPIO3_IO21 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_LCD_DATA17__GPIO3_IO22 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
 
 int board_early_init_f(void)
 {
@@ -864,13 +871,16 @@ int board_init(void)
 
 	/* WiFi Power */
 	imx_iomux_v3_setup_multiple_pads(wifi_pwr_pads, ARRAY_SIZE(wifi_pwr_pads));
-	gpio_direction_output(IMX_GPIO_NR(1, 10) , 0);
+	gpio_direction_output(IMX_GPIO_NR(5, 0) , 0);
 
-	/* WiFi Reset */
-	gpio_direction_output(IMX_GPIO_NR(4, 16) , 0);
-	udelay(3000);
-	gpio_direction_output(IMX_GPIO_NR(4, 16) , 1);
+	/* WiFi WL_REG_ON */
+	gpio_direction_output(IMX_GPIO_NR(5, 7) , 1);
 
+   /*hw watchdog*/
+	imx_iomux_v3_setup_multiple_pads(hwwatchdog_pads, ARRAY_SIZE(hwwatchdog_pads));
+	gpio_direction_output(IMX_GPIO_NR(3, 22) , 1);
+	gpio_direction_output(IMX_GPIO_NR(3, 21) , 1);
+	
 	/* LCD Power */
 	imx_iomux_v3_setup_multiple_pads(lcd_pwr_pads, ARRAY_SIZE(lcd_pwr_pads));
 	gpio_direction_output(IMX_GPIO_NR(3, 4) , 1);
@@ -878,9 +888,9 @@ int board_init(void)
 	/* LTE module */
 	imx_iomux_v3_setup_multiple_pads(lte_pwr_pads, ARRAY_SIZE(lte_pwr_pads));
 	/* LTE wakeup */
-	gpio_direction_output(IMX_GPIO_NR(5, 8) , 1);
+	gpio_direction_output(IMX_GPIO_NR(1, 22) , 1);
 	/* LTE power */
-	gpio_direction_output(IMX_GPIO_NR(5, 5) , 1);
+	gpio_direction_output(IMX_GPIO_NR(1, 23) , 1);
 	/* LTE reset */
 	gpio_direction_output(IMX_GPIO_NR(4, 14) , 1);
 	udelay(150000);
@@ -926,7 +936,7 @@ int board_late_init(void)
 #endif
 
 #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-	setenv("board_name", "MYD6ULL");
+	setenv("board_name", "i.MX6ULL-HMI");
 
 	if (is_mx6ull_9x9_evk())
 		setenv("board_rev", "9X9");
@@ -948,7 +958,7 @@ int checkboard(void)
 	if (is_mx6ull_9x9_evk())
 		puts("Board: MX6ULL 9x9 EVK\n");
 	else
-		puts("Board: MYD-Y6ULL 14x14\n");
+		puts("Board: i.MX6ULL-HMI 14x14\n");
 
 	return 0;
 }
