@@ -852,27 +852,30 @@ int board_init(void)
 
 	/* WiFi Power */
 	imx_iomux_v3_setup_multiple_pads(wifi_pwr_pads, ARRAY_SIZE(wifi_pwr_pads));
-	gpio_direction_output(IMX_GPIO_NR(1, 10) , 0);
+	gpio_direction_output(IMX_GPIO_NR(1, 10) , 0);     // to disable Beep 
 
 	/* WiFi Reset */
-	gpio_direction_output(IMX_GPIO_NR(4, 16) , 0);
+	gpio_direction_output(IMX_GPIO_NR(4, 16) , 0);   // Expansion board PHY RESET
 	udelay(3000);
 	gpio_direction_output(IMX_GPIO_NR(4, 16) , 1);
 
 	/* LCD Power */
 	imx_iomux_v3_setup_multiple_pads(lcd_pwr_pads, ARRAY_SIZE(lcd_pwr_pads));
-	gpio_direction_output(IMX_GPIO_NR(3, 4) , 1);
+	gpio_direction_output(IMX_GPIO_NR(3, 4) , 0);   // output low
 
 	/* LTE module */
 	imx_iomux_v3_setup_multiple_pads(lte_pwr_pads, ARRAY_SIZE(lte_pwr_pads));
 	/* LTE wakeup */
-	gpio_direction_output(IMX_GPIO_NR(5, 8) , 1);
+	gpio_direction_output(IMX_GPIO_NR(5, 8) , 0);  // output low
 	/* LTE power */
-	gpio_direction_output(IMX_GPIO_NR(5, 5) , 1);
+	gpio_direction_output(IMX_GPIO_NR(5, 5) , 1);  //BT RST
 	/* LTE reset */
-	gpio_direction_output(IMX_GPIO_NR(4, 14) , 1);
+	gpio_direction_output(IMX_GPIO_NR(4, 14) , 1);  //LTE RST
 	udelay(150000);
 	gpio_direction_output(IMX_GPIO_NR(4, 14) , 0);
+
+	gpio_direction_output(IMX_GPIO_NR(3, 22) , 1);  //disable watchdog at power on
+	
 
 #ifdef CONFIG_SYS_I2C_MXC
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
@@ -934,9 +937,9 @@ int board_late_init(void)
 int checkboard(void)
 {
 	if (is_mx6ul_9x9_evk())
-		puts("Board: MYD-Y6UL 9x9\n");
+		puts("Board: i.MX6UL-RHMI 9x9 \n");
 	else
-		puts("Board: MYD-Y6UL 14x14\n");
+		puts("Board: i.MX6UL-RHMI 14x14 \n");
 
 	return 0;
 }
